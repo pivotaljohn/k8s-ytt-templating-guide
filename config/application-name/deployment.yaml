@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application-name-server
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: application-name
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: application-name
+    spec:
+      containers:
+        - name: webserver
+          #! built from ./src/application-name/Dockerfile
+          image: jtigger/application-name:latest
+          env:
+            - name: ENVIRONMENT_NAME
+              value: local-dev
