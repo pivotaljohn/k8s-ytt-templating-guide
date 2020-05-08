@@ -14,18 +14,23 @@
 
 ## In this revision ...
 
-We locate and extract values that are repeated and mean the same thing.
+We externalize commonly specified configuration into "data values."
 
 This is done by:
-1. creating a new "module"; _(in ytt, a single file is referred to as a "module".)_
-2. declaring a `struct` within that module that contains the shared values;
-3. loading that module in each template and using the values from the `struct`.
+1. creating a new file named `_defaults.yaml`
+   - the `@data/values` annotation marks this as a "data values" file
+   - `ytt` loads configuration values from such files, first, before rendering any templates
+2. declaring variables in the data values file (in YAML format)
+3. loading the `data` ytt library in each template and using those data values.
 
-We see a key tenet at play:
+Remember this:
 
-> Extract what _**must**_ be the same...
->
-> ...not what is _**coincidentally**_ the same.
+> Externalize what the user _must_ own.
+
+In other templating systems, the author must externalize _all_ variables that the user _might_ want to change.
+This can result in an explosion of input values, making it harder to understand.
+
+With `ytt`, when the user _wants_ to own a piece of configuration, they can use an overlay to make the change.
 
 Examine the changes to the configuration to see how this is true:
 
@@ -33,13 +38,7 @@ Examine the changes to the configuration to see how this is true:
 $ git show -- config
 ```
 
-Also note the [Instructions](#instructions), below now include invoking `ytt` and piping the output to `kubectl`:
 
-```console
-$ git show -- README.md
-```
-
- 
 # Instructions
 
 1. Obtain and target a Kubernetes Cluster.
@@ -52,6 +51,14 @@ $ git show -- README.md
    service/application-service-name created
    ```
 3. Verify the deployment
+   ```console
+   $ curl localhost/app/
+   ``` 
+4. Re-deploy the application, specifying the environment name
+   ```console
+   $ ytt -f config/application-name -v "environmentName=pink-poodle" | kubectl apply -f-
+   ```
+5. Verify that the deployment was updated
    ```console
    $ curl localhost/app/
    ``` 
@@ -70,8 +77,8 @@ $ git show -- README.md
 
 # What Next?
 
-In the next revision, we'll externalize pieces of configuration, strategically.
+In the next revision, 
 
 ```console
-$ git checkout rev2 && git clean -df
+$ git checkout rev3 && git clean -df
 ```

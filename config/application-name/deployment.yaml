@@ -18,4 +18,4 @@ spec:
           image: jtigger/application-name:latest
           env:
             - name: ENVIRONMENT_NAME
-              value: local-dev
+              value: #@ data.values.environmentName

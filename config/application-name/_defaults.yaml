@@ -1,0 +1,5 @@
+#@data/values
+---
+#! name of the environment that this app is being deployed
+#!   examples: "local-dev", "ci", "prod"
+environmentName: local-dev
