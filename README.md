@@ -14,11 +14,31 @@
 
 ## In this revision ...
 
-We start with hard-coded configuration. There are no templates. 
+We locate and extract values that are repeated and mean the same thing.
 
-In subsequent revisions, we can better illustrate how we've refactored configuration.
+This is done by:
+1. creating a new "module"; _(in ytt, a single file is referred to as a "module".)_
+2. declaring a `struct` within that module that contains the shared values;
+3. loading that module in each template and using the values from the `struct`.
 
-It is useful to deploy from this revision to ensure you have a cluster up and running and working well.
+We see a key tenet at play:
+
+> Extract what _**must**_ be the same...
+>
+> ...not what is _**coincidentally**_ the same.
+
+Examine the changes to the configuration to see how this is true:
+
+```console
+$ git show -- config
+```
+
+Also note the [Instructions](#instructions), below now include invoking `ytt` and piping the output to `kubectl`:
+
+```console
+$ git show -- README.md
+```
+
  
 # Instructions
 
@@ -26,7 +46,7 @@ It is useful to deploy from this revision to ensure you have a cluster up and ru
    - absent another option, see [Creating a KIND Cluster](#creating-a-kind-cluster), below.
 2. Deploy the application to the cluster:
    ```console
-   $ kubectl apply -f config/application-name
+   $ ytt -f config/application-name | kubectl apply -f-
    deployment.apps/application-name-server created
    ingress.extensions/application-name created
    service/application-service-name created
@@ -50,9 +70,8 @@ It is useful to deploy from this revision to ensure you have a cluster up and ru
 
 # What Next?
 
-In the next revision, we'll extract values that _must_ match across resources.
+In the next revision, we'll externalize pieces of configuration, strategically.
 
 ```console
-$ git checkout rev1 && git clean -df
+$ git checkout rev2 && git clean -df
 ```
-

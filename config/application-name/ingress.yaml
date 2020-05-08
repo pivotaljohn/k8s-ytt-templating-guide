@@ -1,3 +1,5 @@
+#@ load("application-name.lib.star", "app")
+
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -9,5 +11,5 @@ spec:
       paths:
       - path: /app
         backend:
-          serviceName: application-service-name
-          servicePort: 8080
+          serviceName: #@ app.service.name
+          servicePort: #@ app.service.port
